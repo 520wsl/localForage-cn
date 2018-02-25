@@ -5,136 +5,114 @@
 [![npm](https://img.shields.io/npm/dm/localforage.svg?maxAge=2592000)]()
 [![jsDelivr Hits](https://data.jsdelivr.com/v1/package/npm/localforage/badge?style=rounded)](https://www.jsdelivr.com/package/npm/localforage)
 
-localForage is a fast and simple storage library for JavaScript. localForage
-improves the offline experience of your web app by using asynchronous storage
-(IndexedDB or WebSQL) with a simple, `localStorage`-like API.
+localForage 是一个快速而简单的 JavaScript 存储库。通过使用异步存储（IndexedDB 或 WebSQL）和简单的类 localStorage 的 API ，localForage 能改善 Web 应用的离线体验。
 
-localForage uses localStorage in browsers with no IndexedDB or
-WebSQL support. See [the wiki for detailed compatibility info][supported browsers].
+在不支持 IndexedDB 或 WebSQL 的浏览器中，localForage 使用 localStorage。有关 [兼容性详情，请参阅 wiki][supported browsers]。
 
-To use localForage, just drop a single JavaScript file into your page:
+使用 localForage，只需将 JavaScript 文件放入页面即可：
 
 ```html
 <script src="localforage/dist/localforage.js"></script>
 <script>localforage.getItem('something', myCallback);</script>
 ```
+试一试 [示例](http://codepen.io/thgreasi/pen/ojYKeE)。
+
 Try the [live example](http://codepen.io/thgreasi/pen/ojYKeE).
 
-Download the [latest localForage from GitHub](https://github.com/localForage/localForage/releases/latest), or install with
-[npm](https://www.npmjs.com/):
+下载 [GitHub 上最新的 localForage ](https://github.com/localForage/localForage/releases/latest)，或通过[npm](https://www.npmjs.com/) 安装：
 
 ```bash
 npm install localforage
 ```
 
-or [bower](http://bower.io):
+或通过 [bower](http://bower.io)：
 
 ```bash
 bower install localforage
 ```
 
-localForage is compatible with [browserify](http://browserify.org/).
+localForage 也兼容 [browserify](http://browserify.org/)。
 
 [supported browsers]: https://github.com/localForage/localForage/wiki/Supported-Browsers-Platforms
 
-## Support
+## 支持
 
-Lost? Need help? Try the
-[localForage API documentation](https://localforage.github.io/localForage).
+感到迷茫？需要帮助？试一试 [localForage API 文档](https://localforage.github.io/localForage)。
 
-If you're stuck using the library, running the tests, or want to contribute
-to localForage, you can visit
-[irc.freenode.net](https://freenode.net/) and head to the `#localforage`
-channel to ask questions about localForage.
+如果你正在使用本库，运行测试或想为 localForage 做出贡献，可访问 [irc.freenode.net](https://freenode.net/) 并在`#localforage` 频道咨询有关 localForage 的问题。
 
-The best person to ask about localForage is [**tofumatt**][tofumatt], who
-is usually online from 10am-8pm GMT.
+最佳咨询人员是 [**tofumatt**][tofumatt]，他的在线时间为一般 10 am - 8 pm GMT。
 
 [tofumatt]: http://tofumatt.com/
 
 ## Safari 10.1+
 
-Since Safari 10.1 we default to IndexedDB; see the [CHANGELOG](https://github.com/localForage/localForage/blob/master/CHANGELOG.md) for more info.
+从 Safari 10.1 开始，默认为 IndexedDB；请参阅 [CHANGELOG](https://github.com/localForage/localForage/blob/master/CHANGELOG.md) 了解更多。
 
-# How to use localForage
+# 如何使用 localForage
 
-## Callbacks vs Promises
+## 回调函数 vs Promises
 
-Because localForage uses async storage, it has an async API.
-It's otherwise exactly the same as the
-[localStorage API](https://hacks.mozilla.org/2009/06/localstorage/).
+由于 localForage 使用异步存储，因此 API 是异步的。在其他方面，与 [localStorage API](https://hacks.mozilla.org/2009/06/localstorage/) 完全相同。
 
-localForage has a dual API that allows you to either use Node-style callbacks
-or [Promises](https://www.promisejs.org/). If you are unsure which one is right for you, it's recommended to use Promises.
+localForage 支持两种 API，你可以使用回调函数形式或 Promise。如果你不确定哪一个更适合你，那么建议使用 Promise。
 
-Here's an example of the Node-style callback form:
+下面是一个回调函数形式的示例：
 
 ```js
 localforage.setItem('key', 'value', function (err) {
-  // if err is non-null, we got an error
+  // 若 err 为非 null，则表示出错
   localforage.getItem('key', function (err, value) {
-    // if err is non-null, we got an error. otherwise, value is the value
+    // 若 err 为非 null，则表示出错，否则 value 为 key 对应的值
   });
 });
 ```
 
-And the Promise form:
+Promise 形式：
 
 ```js
 localforage.setItem('key', 'value').then(function () {
   return localforage.getItem('key');
 }).then(function (value) {
-  // we got our value
+  // 成功获取值
 }).catch(function (err) {
-  // we got an error
+  // 出错了
 });
 ```
 
-For more examples, please visit [the API docs](https://localforage.github.io/localForage).
+更多的示例，请访问 [API 文档](https://localforage.github.io/localForage)。
 
-## Storing Blobs, TypedArrays, and other JS objects
+## 存储 Blobs，TypedArrays 或其他类型 JS 对象
 
-You can store any type in localForage; you aren't limited to strings like in
-localStorage. Even if localStorage is your storage backend, localForage
-automatically does `JSON.parse()` and `JSON.stringify()` when getting/setting
-values.
+你可以在 localForage 中存储任何类型; 不像 localStorage 只能存储字符串。即使后端的存储形式为 localStorage，当需要获取/设置值时，localForage 也会自动执行 `JSON.parse()` 和 `JSON.stringify()`。
 
-localForage supports storing all native JS objects that can be serialized to
-JSON, as well as ArrayBuffers, Blobs, and TypedArrays. Check the
-[API docs][api] for a full list of types supported by localForage.
+只要是可以序列化为 JSON 的原生 JS 对象，localForage 都可以存储，包括 ArrayBuffers，Blob 和 TypedArrays。在 [API 文档][api] 可查看 localForage 支持所有类型。
 
-All types are supported in every storage backend, though storage limits in
-localStorage make storing many large Blobs impossible.
+所有的后端存储驱动支持所有类型在，但 localStorage 有存储限制，所以无法存储大型 Blob。
 
 [api]: https://localforage.github.io/localForage/#data-api-setitem
 
-## Configuration
+## 配置
 
-You can set database information with the `config()` method.
-Available options are `driver`, `name`, `storeName`, `version`, `size`, and
-`description`.
+你可以通过 `config()` 方法设置数据库信息。可用的选项有`driver`，`name`，`storeName`，`version`，`size`，和 `description`。
 
-Example:
+示例：
 ```javascript
 localforage.config({
-    driver      : localforage.WEBSQL, // Force WebSQL; same as using setDriver()
+    driver      : localforage.WEBSQL, // 使用 WebSQL；也可以使用 setDriver()
     name        : 'myApp',
     version     : 1.0,
-    size        : 4980736, // Size of database, in bytes. WebSQL-only for now.
-    storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
+    size        : 4980736, // 数据库的大小，单位为字节。现仅 WebSQL 可用
+    storeName   : 'keyvaluepairs', // 仅接受字母，数字和下划线
     description : 'some description'
 });
 ```
 
-**Note:** you must call `config()` _before_ you interact with your data. This
-means calling `config()` before using `getItem()`, `setItem()`, `removeItem()`,
-`clear()`, `key()`, `keys()` or `length()`.
+**注意：**在数据交互之前，你必须先调用 `config()`。即在使用 `getItem()`，`setItem()`，`removeItem()`，`clear()`，`key()`，`keys()` 或 `length()` 前要先调用 `config()`。
 
-## Multiple instances
+## 多实例
 
-You can create multiple instances of localForage that point to different stores
-using `createInstance`. All the configuration options used by
-[`config`](#configuration) are supported.
+通过 `createInstance` 方法，你可以创建多个 localForage 实例，且能指向不同数据仓库。所有 [config](#api-config) 中的配置选项都可用。
 
 ``` javascript
 var store = localforage.createInstance({
@@ -145,32 +123,30 @@ var otherStore = localforage.createInstance({
   name: "otherName"
 });
 
-// Setting the key on one of these doesn't affect the other.
+// 设置某个数据仓库 key 的值不会影响到另一个数据仓库
 store.setItem("key", "value");
 otherStore.setItem("key", "value2");
 ```
 
 ## RequireJS
 
-You can use localForage with [RequireJS](http://requirejs.org/):
+你可以通过 [RequireJS](http://requirejs.org/) 使用 localForage：
 
 ```javascript
 define(['localforage'], function(localforage) {
-    // As a callback:
+    // 作为回调函数
     localforage.setItem('mykey', 'myvalue', console.log);
 
-    // With a Promise:
+    // 使用 Promise
     localforage.setItem('mykey', 'myvalue').then(console.log);
 });
 ```
 
-## Browserify and Webpack
+## Browserify 和 Webpack
 
-localForage 1.3+ works with both Browserify and Webpack. If you're using an
-earlier version of localForage and are having issues with Browserify or
-Webpack, please upgrade to 1.3.0 or above.
+localForage 1.3+ 支持 Browserify 和 Webpack。如果你使用的是早期版本的 localForage，且在与 Browserify 或 Webpack 搭配使用时有问题，请升级至 1.3.0 或更高版本。
 
-Webpack will emit a warning about using a prebuilt javascript file which is fine. If you want to remove the warning you should exclude `localforage` from being parsed by webpack using the following conf :
+在预构建正常的 JavaScript 文件的时候，Webpack 可能会提示警告信息。如果你想删除警告，你可以使用下面的配置，在 Webpack 解析时忽略 `localforage`：
 
 ```javascript
 module: {
@@ -180,26 +156,27 @@ module: {
 
 ## TypeScript
 
-If you have the [`allowSyntheticDefaultImports` compiler option](https://www.typescriptlang.org/docs/handbook/compiler-options.html) set to `true` in your [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) (supported in TypeScript v1.8+), you should use:
+若你在 [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)（支持 TypeScript v1.8+）中将 [`allowSyntheticDefaultImports` 编译选项](https://www.typescriptlang.org/docs/handbook/compiler-options.html) 设置为 `true`，那么你应该这样使用：
 
 ```javascript
 import localForage from "localforage";
 ```
 
-Otherwise you should use one of the following:
+否则，你应该使用以下方法中的一种：
 
 ```javascript
 import * as localForage from "localforage";
-// or, in case that the typescript version that you are using
-// doesn't support ES6 style imports for UMD modules like localForage
+// 若你用的 TypeScript 版本不支持 ES6 风格导入像 localForage 这样的 UMD 模块，则用如下方式导入：
 import localForage = require("localforage");
 ```
 
-## Framework Support
+## 框架支持
 
 If you use a framework listed, there's a localForage storage driver for the
 models in your framework so you can store data offline with localForage. We
 have drivers for the following frameworks:
+
+若你使用框架，为方便你直接使用 localForage 离线存储数据，localForage 为如下几种框架都提供了模块作为驱动，如下：
 
 * [AngularJS](https://github.com/ocombe/angular-localForage)
 * [Angular 4+](https://www.npmjs.com/package/ngforage)
@@ -207,56 +184,44 @@ have drivers for the following frameworks:
 * [Ember](https://github.com/genkgo/ember-localforage-adapter)
 * [Vue](https://github.com/dmlzj/vlf)
 
-If you have a driver you'd like listed, please
-[open an issue](https://github.com/localForage/localForage/issues/new) to have it
-added to this list.
+如果你有其他驱动，同时也像将其加入此列表，请 [提出 issue](https://github.com/localForage/localForage/issues/new)。
 
-## Custom Drivers
+## 自定义驱动
 
-You can create your own driver if you want; see the
-[`defineDriver`](https://localforage.github.io/localForage/#driver-api-definedriver) API docs.
+你可以创建你自己的驱动; 参阅 [`defineDriver`](https://localforage.github.io/localForage/#driver-api-definedriver) API 文档。
 
-There is a [list of custom drivers on the wiki][custom drivers].
+Wiki 中有 [自定义驱动列表][custom drivers]。
 
 [custom drivers]: https://github.com/localForage/localForage/wiki/Custom-Drivers
 
-# Working on localForage
+# 修改 localForage
 
-You'll need [node/npm](http://nodejs.org/) and
-[bower](http://bower.io/#installing-bower).
+你需要有 [node/npm](http://nodejs.org/) 和 [bower](http://bower.io/#installing-bower)。
 
-To work on localForage, you should start by
-[forking it](https://github.com/localForage/localForage/fork) and installing its
-dependencies. Replace `USERNAME` with your GitHub username and run the
-following:
+要使用 localForage，你需要先 [fork](https://github.com/localForage/localForage/fork) 并安装依赖。将 `USERNAME` 替换为你的 GitHub 用户名，并运行以下命令：
 
 ```bash
-# Install bower globally if you don't have it:
+# 若你没有安装过 bower，则需要先全局安装 bower
 npm install -g bower
 
-# Replace USERNAME with your GitHub username:
+# 将 USERNAME 替换为你的 GitHub 用户名：
 git clone git@github.com:USERNAME/localForage.git
 cd localForage
 npm install
 bower install
 ```
 
-Omitting the bower dependencies will cause the tests to fail!
+缺少 bower 依赖会导致测试失败！
 
-## Running Tests
+## 执行测试
 
-You need PhantomJS installed to run local tests. Run `npm test` (or,
-directly: `grunt test`). Your code must also pass the
-[linter](http://jshint.com/).
+本地执行测试需要安装 PhantomJS。执行 `npm test`（或直接：`grunt test`）。你的代码必须通过 [linter](http://jshint.com/) 的检查。
 
-localForage is designed to run in the browser, so the tests explicitly require
-a browser environment. Local tests are run on a headless WebKit (using
-[PhantomJS](http://phantomjs.org)).
+localForage 仅能在浏览器中运行，因此执行测试需要一个浏览器环境。本地测试在无头 WebKit 浏览器上运行（使用 [PhantomJS](http://phantomjs.org)）。
 
-When you submit a pull request, tests will be run against all browsers that
-localForage supports on Travis CI using [Sauce Labs](https://saucelabs.com/).
+localForage 通过 [Sauce Labs](https://saucelabs.com/) 支持 Travis CI，当你提交 Pull request 时，将在所有浏览器中自动执行测试。
 
-# License
+# 许可协议
 
 This program is free software; it is distributed under an
 [Apache License](https://github.com/localForage/localForage/blob/master/LICENSE).
