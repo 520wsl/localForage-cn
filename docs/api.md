@@ -1,37 +1,37 @@
 # localForage
 
-**Offline storage, improved.**
+**改进的离线存储**
 
 ```js
-// Set a value with localStorage:
+// 通过 localStorage 设置值
 localStorage.setItem('key', JSON.stringify('value'));
 doSomethingElse();
 
-// The same code with localForage:
+// 通过 localForage 完成同样功能
 localforage.setItem('key', 'value').then(doSomethingElse);
 
-// localForage also support callbacks:
+// localForage 同样支持回调函数
 localforage.setItem('key', 'value', doSomethingElse);
 ```
 
-localForage is a JavaScript library that improves the offline experience of your web app by using an asynchronous data store with a simple, `localStorage`-like API. It allows developers to [store many types of data](#data-api-setitem) instead of just strings.
+localForage 是一个 JavaScript 库，通过简单类似 `localStorage` API 的异步数据存储来改进你的 Web 应用程序的离线体验。它能存储多种类型的数据，而不仅仅是字符串。
 
-localForage includes a localStorage-backed fallback store for browsers with no IndexedDB or WebSQL support. Asynchronous storage is available in the current versions of all major browsers: Chrome, Firefox, IE, and Safari (including Safari Mobile).
+localForage 有一个优雅降级策略，若浏览器不支持 IndexedDB 或 WebSQL，则使用 localStorage。在所有主流浏览器中都可用：Chrome，Firefox，IE 和 Safari（包括 Safari Mobile）。
 
-**localForage offers a callback API as well as support for the [ES6 Promises API][]**, so you can use whichever you prefer.
+**localForage 提供回调 API 同时也支持 [ES6 Promises API][]**，因此你可以自行选择。
 
-[Download localforage.min.js][download]
+[下载 localforage.min.js][download]
 
 [download]: https://raw.githubusercontent.com/mozilla/localForage/master/dist/localforage.min.js
 [ES6 Promises API]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
-# Installation
+# 安装
 
 ```bash
-# Install via npm:
+# 通过 npm 安装：
 npm install localforage
 
-# Or with bower:
+# 或通过 bower：
 bower install localforage
 ```
 
@@ -40,75 +40,73 @@ bower install localforage
 <script>console.log('localforage is: ', localforage);</script>
 ```
 
-To use localForage, [download the latest release](https://github.com/mozilla/localForage/releases) or install with [npm](https://www.npmjs.org/) (`npm install localforage`) or [bower](http://bower.io/) (`bower install localforage`).
+使用 localForage，请 [下载最新版本](https://github.com/mozilla/localForage/releases) 或使用 [npm](https://www.npmjs.org/)（`npm install localforage`）或 [bower](http://bower.io/)（`bower install localforage`）进行安装。
 
-Then simply include the JS file and start using localForage: `<script src="localforage.js"></script>`. You don't need to run any init method or wait for any `onready` events.
+然后，只需包含 JS 文件即可使用 localForage：`<script src="localforage.js"></script>`。你不需要运行任何初始化方法或等待 `onready` 事件。
 
-# Data API
+# 数据 API
 
-These APIs deal with getting and setting data in the offline store.
+在离线存储时，通过这些 API 获取和设置数据。
 
 ## getItem
 
 ```js
 localforage.getItem('somekey').then(function(value) {
-    // This code runs once the value has been loaded
-    // from the offline store.
+    // 当离线存储的值被载入时，此处代码运行
     console.log(value);
 }).catch(function(err) {
-    // This code runs if there were any errors
+    // 当出错时，此处代码运行
     console.log(err);
 });
 
-// Callback version:
+// 回调版本：
 localforage.getItem('somekey', function(err, value) {
-    // Run this code once the value has been
-    // loaded from the offline store.
+    // 当离线存储的值被载入时，此处代码运行
     console.log(value);
 });
 ```
 
 `getItem(key, successCallback)`
 
-Gets an item from the storage library and supplies the result to a callback. If the key does not exist, `getItem()` will return `null`.
+从存储中获取 key 对应的值并将结果提供给回调函数。如果 key 不存在，`getItem()` 将返回 `null`。
 
 <aside class="notice">
-  Even if `undefined` is saved, `null` will be returned by `getItem()`. This is due to a [limitation in localStorage](https://github.com/mozilla/localForage/pull/42), and for compatibility reasons localForage cannot store the value `undefined`.
+  当存储 `undefined` 时， `getItem()` 也会返回 `null`。由于 [localStorage 限制](https://github.com/mozilla/localForage/pull/42)，同时出于兼容性的原因 localForage 无法存储 `undefined`。
 </aside>
 
 ## setItem
 
 ```js
 localforage.setItem('somekey', 'some value').then(function (value) {
-    // Do other things once the value has been saved.
+    // 当值被存储后，可执行其他操作
     console.log(value);
 }).catch(function(err) {
-    // This code runs if there were any errors
+    // 当出错时，此处代码运行
     console.log(err);
 });
 
-// Unlike localStorage, you can store non-strings.
+// 不同于 localStorage，你可以存储非字符串类型
 localforage.setItem('my array', [1, 2, 'three']).then(function(value) {
-    // This will output `1`.
+    // 如下输出 `1`
     console.log(value[0]);
 }).catch(function(err) {
-    // This code runs if there were any errors
+    // 当出错时，此处代码运行
     console.log(err);
 });
 
-// You can even store binary data from an AJAX request.
+// 你甚至可以存储 AJAX 响应返回的二进制数据
 req = new XMLHttpRequest();
 req.open('GET', '/photo.jpg', true);
 req.responseType = 'arraybuffer';
 
 req.addEventListener('readystatechange', function() {
-    if (req.readyState === 4) { // readyState DONE
+    if (req.readyState === 4) { // readyState 完成
         localforage.setItem('photo', req.response).then(function(image) {
-            // This will be a valid blob URI for an <img> tag.
+            // 如下为一个合法的 <img> 标签的 blob URI
             var blob = new Blob([image]);
             var imageURI = window.URL.createObjectURL(blob);
         }).catch(function(err) {
-          // This code runs if there were any errors
+          // 当出错时，此处代码运行
           console.log(err);
         });
     }
@@ -117,7 +115,7 @@ req.addEventListener('readystatechange', function() {
 
 `setItem(key, value, successCallback)`
 
-Saves data to an offline store. You can store the following types of JavaScript objects:
+将数据保存到离线存储。你可以存储如下类型的 JavaScript 对象：
 
 * **`Array`**
 * **`ArrayBuffer`**
@@ -136,37 +134,37 @@ Saves data to an offline store. You can store the following types of JavaScript 
 * **`String`**
 
 <aside class="notice">
-  When using localStorage and WebSQL backends, binary data will be serialized before being saved (and retrieved). This serialization will incur a size increase when binary data is saved.
+  当使用 localStorage 和 WebSQL 作为后端时，二进制数据在保存（和检索）之前会被序列化。在保存二进制数据时，序列化会导致大小增大。
 </aside>
 
-<a href="http://jsfiddle.net/ryfo1jk4/161/">Live demo</a>
+<a href="http://jsfiddle.net/ryfo1jk4/161/">示例</a>
 
 ## removeItem
 
 ```js
 localforage.removeItem('somekey').then(function() {
-    // Run this code once the key has been removed.
+    // 当值被移除后，此处代码运行
     console.log('Key is cleared!');
 }).catch(function(err) {
-    // This code runs if there were any errors
+    // 当出错时，此处代码运行
     console.log(err);
 });
 ```
 
 `removeItem(key, successCallback)`
 
-Removes the value of a key from the offline store.
+从离线存储中删除 key 对应的值。
 
-<a href="http://jsfiddle.net/y1Ly0hk1/37/">Live demo</a>
+<a href="http://jsfiddle.net/y1Ly0hk1/37/">示例</a>
 
 ## clear
 
 ```js
 localforage.clear().then(function() {
-    // Run this code once the database has been entirely deleted.
+    // 当数据库被全部删除后，此处代码运行
     console.log('Database is now empty.');
 }).catch(function(err) {
-    // This code runs if there were any errors
+    // 当出错时，此处代码运行
     console.log(err);
 });
 ```
@@ -174,80 +172,79 @@ localforage.clear().then(function() {
 `clear(successCallback)`
 
 Removes every key from the database, returning it to a blank slate.
+从数据库中删除所有的 key，将数据库清空。
 
 <aside class="warning">
-  `localforage.clear()` will remove **every item in the offline store**. Use this method with caution.
+  `localforage.clear()` 将会删除**离线存储中的所有值**。谨慎使用此方法。
 </aside>
 
 ## length
 
 ```js
 localforage.length().then(function(numberOfKeys) {
-    // Outputs the length of the database.
+    // 输出数据库的大小
     console.log(numberOfKeys);
 }).catch(function(err) {
-    // This code runs if there were any errors
+    // 当出错时，此处代码运行
     console.log(err);
 });
 ```
 
 `length(successCallback)`
 
-Gets the number of keys in the offline store (i.e. its "length").
+获取离线存储中的 key 的数量（即数据库的“大小”）。
 
 ## key
 
 ```js
 localforage.key(2).then(function(keyName) {
-    // Name of the key.
+    // key 名
     console.log(keyName);
 }).catch(function(err) {
-    // This code runs if there were any errors
+    // 当出错时，此处代码运行
     console.log(err);
 });
 ```
 
 `key(keyIndex, successCallback)`
 
-Get the name of a key based on its ID.
+根据 key 的索引获取其名
 
 <aside class="notice">
-  This method is inherited from the localStorage API, but is acknowledged to be kinda weird.
+  虽然是从 localStorage API 延续而来的，但此方法被认为有点怪异。
 </aside>
 
 ## keys
 
 ```js
 localforage.keys().then(function(keys) {
-    // An array of all the key names.
+    // 包含所有 key 名的数组
     console.log(keys);
 }).catch(function(err) {
-    // This code runs if there were any errors
+    // 当出错时，此处代码运行
     console.log(err);
 });
 ```
 
 `keys(successCallback)`
 
-Get the list of all keys in the datastore.
+获取数据仓库中所有的 key。
 
 ## iterate
 
 ```js
-// The same code, but using ES6 Promises.
+// 同样的代码，但使用 ES6 Promises
 localforage.iterate(function(value, key, iterationNumber) {
-    // Resulting key/value pair -- this callback
-    // will be executed for every item in the
-    // database.
+    // 此回调函数将对所有 key/value 键值对运行
     console.log([key, value]);
 }).then(function() {
     console.log('Iteration has completed');
 }).catch(function(err) {
-    // This code runs if there were any errors
+    // 当出错时，此处代码运行
     console.log(err);
 });
 
-// Exit the iteration early:
+// 提前退出迭代：
 localforage.iterate(function(value, key, iterationNumber) {
     if (iterationNumber < 3) {
         console.log([key, value]);
@@ -258,80 +255,80 @@ localforage.iterate(function(value, key, iterationNumber) {
     console.log('Iteration has completed, last iterated pair:');
     console.log(result);
 }).catch(function(err) {
-    // This code runs if there were any errors
+    // 当出错时，此处代码运行
     console.log(err);
 });
 ```
 
 `iterate(iteratorCallback, successCallback)`
 
-Iterate over all value/key pairs in datastore.
+迭代数据仓库中的所有 value/key 键值对。
 
 `iteratorCallback` is called once for each pair, with the following arguments:
-
-1. value
-2. key
-3. iterationNumber - one-based number
+`iteratorCallback` 在每一个键值对上都会调用一次，其参数如下：
+1. value 为值
+2. key 为键名
+3. iterationNumber 为迭代索引 - 数字
 
 <aside class="notice">
-  <code>iterate</code> supports early exit by returning non `undefined` value inside `iteratorCallback` callback. Resulting value will be passed to `successCallback` as the result of iteration.
-
-  This means if you're using CoffeeScript, you'll need to manually `return` nothing to keep iterating through each key/value pair.
+  通过在 `iteratorCallback` 回调函数中返回一个非 `undefined` 的值，能提前退出 <code>iterate</code>。`iteratorCallback` 的返回值即作为整个迭代的结果，将被传入 `successCallback`。
+    <br><br>
+  这意味着如果你使用的是 CoffeeScript，那么你需要手动执行一个不带内容的 `return` 语句才能继续迭代所有的 key/value 键值对。
 </aside>
 
-# Settings API
+# 设置 API
 
 These methods allow driver selection and database configuration. These methods should generally be called before the first _data_ API call to localForage (i.e. before you call `getItem()` or `length()`, etc.)
+
+通过这些方法可选择驱动和配置数据库。这些方法通常应该在第一个 `数据 API` 调用之前调用（即在你调用 `getItem()` 或 `length()` 之前）
 
 ## setDriver
 
 ```js
-// Force localStorage to be the backend driver.
+// 强制设置 localStorage 为后端的驱动
 localforage.setDriver(localforage.LOCALSTORAGE);
 
-// Supply a list of drivers, in order of preference.
+// 列出可选的驱动，以优先级排序
 localforage.setDriver([localforage.WEBSQL, localforage.INDEXEDDB]);
 ```
 
 `setDriver(driverName)`<br>
 `setDriver([driverName, nextDriverName])`
 
-Force usage of a particular driver or drivers, if available.
+若可用，强制设置特定的驱动。
 
-By default, localForage selects backend drivers for the datastore in this order:
+默认情况下，localForage 按照以下顺序选择数据仓库的后端驱动：
 
 1. IndexedDB
 2. WebSQL
 3. localStorage
 
-If you would like to force usage of a particular driver you can use `setDriver()` with one or more of the following arguments:
+如果你想强制使用特定的驱动，可以使用 `setDriver()`，参数为以下的某一个或多个：
 
 * `localforage.INDEXEDDB`
 * `localforage.WEBSQL`
 * `localforage.LOCALSTORAGE`
 
 <aside class="notice">
-  If the backend you're trying to load isn't available on the user's browser, localForage will continue to use whatever backend driver it was previously using. This means that if you try to force a Gecko browser to use WebSQL, it will fail and continue using IndexedDB.
+  如果你尝试加载的后端驱动在浏览器上不可用，localForage 将使用以前使用的后端驱动中的一个。这意味着如果你试图强制 Gecko 浏览器使用 WebSQL，则会失败并继续使用 IndexedDB。
 </aside>
 
 ## config
 
 ```js
-// This will rename the database from "localforage"
-// to "Hipster PDA App".
+// 将数据库从 “localforage” 重命名为 “Hipster PDA App”
 localforage.config({
     name: 'Hipster PDA App'
 });
 
-// This will force localStorage as the storage
-// driver even if another is available. You can
-// use this instead of `setDriver()`.
+// 将强制使用 localStorage 作为存储驱动，即使其他驱动可用。
+// 可用配置代替 `setDriver()`。
 localforage.config({
     driver: localforage.LOCALSTORAGE,
     name: 'I-heart-localStorage'
 });
 
-// This will use a different driver order.
+// 配置不同的驱动优先级
 localforage.config({
     driver: [localforage.WEBSQL,
              localforage.INDEXEDDB,
@@ -342,91 +339,91 @@ localforage.config({
 
 `config(options)`
 
-Set and persist localForage options. This must be called *before* any other calls to localForage are made, but can be called after localForage is loaded. If you set any config values with this method they will persist after driver changes, so you can call `config()` then `setDriver()`. The following config values can be set:
+设置 localForage 选项。在调用 localForage *前*必先调用它，但可以在 localForage 被加载后调用。使用此方法设置的任何配置值都将保留，即使在驱动更改后，所以你也可以先调用 `config()` 再次调用 `setDriver()`。以下配置值可以设置：
 
 <dl>
   <dt>driver</dt>
   <dd>
-    The preferred driver(s) to use. Same format as what is passed to <a href="#settings-api-setdriver"><code>setDriver</code></a>, above.<br>
-    Default: <code>[localforage.INDEXEDDB, localforage.WEBSQL, localforage.LOCALSTORAGE]</code>
+    要使用的首选驱动。与上面的 <a href="#settings-api-setdriver"><code>setDriver</code></a> 的值格式相同。<br>
+    默认值：<code>[localforage.INDEXEDDB, localforage.WEBSQL, localforage.LOCALSTORAGE]</code>
   </dd>
   <dt>name</dt>
   <dd>
-    The name of the database. May appear during storage limit prompts. Useful to use the name of your app here. In localStorage, this is used as a key prefix for all keys stored in localStorage.<br>
-    Default: <code>'localforage'</code>
+    数据库的名称。可能会在在数据库的提示中会出现。一般使用你的应用程序的名字。在 localStorage 中，它作为存储在 localStorage 中的所有 key 的前缀。<br>
+    默认值：<code>'localforage'</code>
   </dd>
   <dt>size</dt>
   <dd>
-    The size of the database in bytes. Used only in WebSQL for now.<br>
-    Default: <code>4980736</code>
+    数据库的大小（以字节为单位）。现在只用于WebSQL。
+    默认值：<code>4980736</code>
   </dd>
   <dt>storeName</dt>
   <dd>
-    The name of the datastore. In IndexedDB this is the <code>dataStore</code>, in WebSQL this is the name of the key/value table in the database. <strong>Must be alphanumeric, with underscores.</strong> Any non-alphanumeric characters will be converted to underscores.<br>
-    Default: <code>'keyvaluepairs'</code>
+    数据仓库的名称。在 IndexedDB 中为 <code>dataStore</code>，在 WebSQL 中为数据库 key/value 键值表的名称。<strong>仅含字母和数字和下划线。</strong>任何非字母和数字字符都将转换为下划线。<br>
+    默认值：<code>'keyvaluepairs'</code>
   </dd>
   <dt>version</dt>
   <dd>
-    The version of your database. May be used for upgrades in the future; currently unused.<br>
-    Default: <code>1.0</code>
+    数据库的版本。将来可用于升级; 目前未使用。<br>
+    默认值：<code>1.0</code>
   </dd>
   <dt>description</dt>
   <dd>
-    A description of the database, essentially for developer usage.<br>
-    Default: <code>''</code>
+    数据库的描述，一般是提供给开发者的。<br>
+    默认值：<code>''</code>
   </dd>
 </dl>
 
 <aside class="notice">
-  Unlike most of the localForage API, the <code>config</code> method is synchronous.
+  与大多数 localForage API 不同，该 <code>config</code> 方法是同步的。
 </aside>
 
-# Driver API
+# 驱动 API
 
-You can write your own, custom driver for localForage since **version 1.1**.
+从**1.1版**开始，就可以为 localForage 自定义驱动了。
 
 ## defineDriver
 
 ```js
-// Implement the driver here.
+// 此处为驱动的实现
 var myCustomDriver = {
     _driver: 'customDriverUniqueName',
     _initStorage: function(options) {
-        // Custom implementation here...
+        // 在此处自定义实现...
     },
     clear: function(callback) {
-        // Custom implementation here...
+        // 在此处自定义实现...
     },
     getItem: function(key, callback) {
-        // Custom implementation here...
+        // 在此处自定义实现...
     },
     key: function(n, callback) {
-        // Custom implementation here...
+        // 在此处自定义实现...
     },
     keys: function(callback) {
-        // Custom implementation here...
+        // 在此处自定义实现...
     },
     length: function(callback) {
-        // Custom implementation here...
+        // 在此处自定义实现...
     },
     removeItem: function(key, callback) {
-        // Custom implementation here...
+        // 在此处自定义实现...
     },
     setItem: function(key, value, callback) {
-        // Custom implementation here...
+        // 在此处自定义实现...
     }
 }
 
-// Add the driver to localForage.
+// 为 localForage 添加驱动。
 localforage.defineDriver(myCustomDriver);
 ```
 
-You'll want to make sure you accept a `callback` argument and that you pass the same arguments to callbacks as the default drivers do. You'll also want to resolve or reject promises. Check any of the [default drivers][] for an idea of how to implement your own, custom driver.
+你需要确保接受一个 `callback` 参数，并且将同样的几个参数传递给回调函数，类似默认驱动那样。你还需要处理 resolve 或 reject promises。查看 [默认驱动][default drivers]，了解如何实现自定义的驱动。
 
-The custom implementation may contain a `_support` property that is either boolean (`true`/`false`) or returns a `Promise` that resolves to a boolean value. If `_support` is omitted, then `true` is the default value. You can use this to make sure the browser in use supports your custom driver.
+自定义实现可包含一个 `_support` 属性，该属性为布尔值（`true` / `false`） ，或者返回一个 `Promise`,该 `Promise` 的结果为布尔值。如果省略 `_support`，则默认值是 `true` 。你用它来标识当前的浏览器支持你自定义的驱动。
 
 <aside class="notice">
-  These drivers are available to every instance of localForage on the page, regardless of which instance you use to add the implementation.
+  你在任何一个 localForage 实例上添加驱动实现后，则该驱动可用于页面内的所有 localForage 实例。
 </aside>
 
 [default drivers]: https://github.com/mozilla/localForage/tree/master/src/drivers
@@ -440,27 +437,25 @@ localforage.driver();
 
 `driver()`
 
-Returns the name of the driver being used, `null` during the asynchronous driver initialization process (see <a href="#driver-api-ready"><code>ready</code></a> for more details), or `null` if the asynchronous driver initialization process failed to find a usable driver.
+返回正在使用的驱动的名称，在异步的驱动初始化过程中（详情参阅 <a href="#driver-api-ready"><code>ready</code></a>）为 `null`，若初始化未能找到可用的驱动也为 `null`。
 
 <aside class="notice">
-  In case that a driver fails during or right after the initialization process, then localForage will try to use the next in order driver. That is with respect to the default driver order while loading localForage or to the order the drivers were passed to `setDriver()`.
+  如果驱动在初始化过程中或之后出错，localForage 将试着使用下一个驱动。由加载 localForage 时的默认驱动顺序或传递给 `setDriver()` 的驱动顺序决定。
 </aside>
 
 ## ready
 
 ```js
 localforage.ready().then(function() {
-    // This code runs once localforage
-    // has fully initialized the selected driver.
+    // 当 localforage 将指定驱动初始化完成时，此处代码运行
     console.log(localforage.driver()); // LocalStorage
 }).catch(function (e) {
     console.log(e); // `No available storage method found.`
-    // One of the cases that `ready()` rejects,
-    // is when no usable storage driver is found
+    // 当没有可用的驱动时，`ready()` 将会失败
 });
 ```
 
-Even though localForage queues up all of its data API method calls, `ready()` provides a way to determine whether the asynchronous driver initialization process has finished. That's useful in cases like when we want to know which driver localForage has settled down using.
+`ready()` 提供了一种方法来确定异步驱动程序初始化过程是否已完成，localForage 会对所有数据 API 方法的调用进行缓冲排序。当我们需要知道 localForage 当前正在使用的是哪一个驱动时，此方法会非常有用。
 
 ## supports
 
@@ -471,13 +466,14 @@ localforage.supports(localforage.INDEXEDDB);
 
 `supports(driverName)`
 
-Returns (boolean) whether `driverName` is supported by the browser.
+返回一个布尔值，表示浏览器是否支持 `driverName`。
 
-See <a href="#settings-api-setdriver"><code>setDriver</code></a> for default driver names.
+默认驱动名称可参阅 <a href="#settings-api-setdriver"><code>setDriver</code></a>。
 
-# Multiple Instances
+# 多实例
 
-You can create multiple instances of localForage that point to different stores. All the configuration options used by [config](#config) are supported.
+
+你可以创建多个 localForage 实例，且能指向不同数据仓库。所有 [config](#api-config) 中的配置选项都可用。
 
 ## createInstance
 
@@ -490,12 +486,12 @@ var otherStore = localforage.createInstance({
   name: "otherName"
 });
 
-// Setting the key on one of these doesn't affect the other.
+// 设置某个数据仓库 key 的值不会影响到另一个数据仓库
 store.setItem("key", "value");
 otherStore.setItem("key", "value2");
 ```
 
-Creates a new instance of localForage and returns it. Each object contains its own database and doesn't affect other instances of localForage.
+创建并返回一个 localForage 的新实例。每个实例对象都有独立的数据库，而不会影响到其他实例。
 
 ## dropInstance
 
@@ -518,6 +514,6 @@ localforage.dropInstance({
 });
 ```
 
-When invoked with no arguments, it drops the "store" of the current instance.
-When invoked with an object specifying both `name` and `storeName` properties, it drops the specified "store".
-When invoked with an object specifying only a `name` property, it drops the specified "database" (and all its stores).
+调用时，若不传参，将删除当前实例的 “数据仓库” 。
+调用时，若参数为一个指定了 `name` 和 `storeName` 属性的对象，会删除指定的 “数据仓库”。
+调用时，若参数为一个仅指定了 `name` 属性的对象，将删除指定的 “数据库”（及其所有数据仓库）。
