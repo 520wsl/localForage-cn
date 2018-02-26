@@ -15,9 +15,9 @@ localForage 是一个快速而简单的 JavaScript 存储库。通过使用异�
 <script src="localforage/dist/localforage.js"></script>
 <script>localforage.getItem('something', myCallback);</script>
 ```
+
 试一试 [示例](http://codepen.io/thgreasi/pen/ojYKeE)。
 
-Try the [live example](http://codepen.io/thgreasi/pen/ojYKeE).
 
 下载 [GitHub 上最新的 localForage ](https://github.com/localForage/localForage/releases/latest)，或通过[npm](https://www.npmjs.com/) 安装：
 
@@ -41,7 +41,7 @@ localForage 也兼容 [browserify](http://browserify.org/)。
 
 如果你正在使用本库，运行测试或想为 localForage 做出贡献，可访问 [irc.freenode.net](https://freenode.net/) 并在`#localforage` 频道咨询有关 localForage 的问题。
 
-最佳咨询人员是 [**tofumatt**][tofumatt]，他的在线时间为一般 10 am - 8 pm GMT。
+最佳咨询人员是 [**tofumatt**][tofumatt]，他在线时间一般为格林威治时间 10 am - 8 pm。
 
 [tofumatt]: http://tofumatt.com/
 
@@ -51,7 +51,7 @@ localForage 也兼容 [browserify](http://browserify.org/)。
 
 # 如何使用 localForage
 
-## 回调函数 vs Promises
+## 回调函数 vs Promise
 
 由于 localForage 使用异步存储，因此 API 是异步的。在其他方面，与 [localStorage API](https://hacks.mozilla.org/2009/06/localstorage/) 完全相同。
 
@@ -61,9 +61,9 @@ localForage 支持两种 API，你可以使用回调函数形式或 Promise。�
 
 ```js
 localforage.setItem('key', 'value', function (err) {
-  // 若 err 为非 null，则表示出错
+  // 若 err 不为 null，则表示出错
   localforage.getItem('key', function (err, value) {
-    // 若 err 为非 null，则表示出错，否则 value 为 key 对应的值
+    // 若 err 不为 null，则表示出错，否则 value 为 key 对应的值
   });
 });
 ```
@@ -94,7 +94,7 @@ localforage.setItem('key', 'value').then(function () {
 
 ## 配置
 
-你可以通过 `config()` 方法设置数据库信息。可用的选项有`driver`，`name`，`storeName`，`version`，`size`，和 `description`。
+你可以通过 `config()` 方法设置数据库信息。可用的选项有 `driver`，`name`，`storeName`，`version`，`size`，和 `description`。
 
 示例：
 ```javascript
@@ -112,7 +112,7 @@ localforage.config({
 
 ## 多实例
 
-通过 `createInstance` 方法，你可以创建多个 localForage 实例，且能指向不同数据仓库。所有 [config](#api-config) 中的配置选项都可用。
+通过 `createInstance` 方法，你可以创建多个 localForage 实例，且能指向不同数据仓库。所有 [config](https://xmoyking.github.io/localForage-cn/#api-config) 中的配置选项都可用。
 
 ``` javascript
 var store = localforage.createInstance({
@@ -142,11 +142,11 @@ define(['localforage'], function(localforage) {
 });
 ```
 
-## Browserify 和 Webpack
+## Browserify 和 webpack
 
-localForage 1.3+ 支持 Browserify 和 Webpack。如果你使用的是早期版本的 localForage，且在与 Browserify 或 Webpack 搭配使用时有问题，请升级至 1.3.0 或更高版本。
+localForage 1.3+ 支持 Browserify 和 webpack。如果你使用的是早期版本的 localForage，且与 Browserify 或 webpack 搭配时有问题，请升级至 1.3.0 或更高版本。
 
-在预构建正常的 JavaScript 文件的时候，Webpack 可能会提示警告信息。如果你想删除警告，你可以使用下面的配置，在 Webpack 解析时忽略 `localforage`：
+在预构建一个正常的 JavaScript 文件的时候，webpack 可能会提示警告信息。如果你不想看到警告，你可以使用下面的配置，在 webpack 解析时忽略 `localforage`：
 
 ```javascript
 module: {
@@ -172,11 +172,7 @@ import localForage = require("localforage");
 
 ## 框架支持
 
-If you use a framework listed, there's a localForage storage driver for the
-models in your framework so you can store data offline with localForage. We
-have drivers for the following frameworks:
-
-若你使用框架，为方便你直接使用 localForage 离线存储数据，localForage 为如下几种框架都提供了模块作为驱动，如下：
+若你使用如下的框架，localForage 为这几种框架都提供了模块作为驱动，你可以通过 localForage 离线存储数据。支持的框架驱动如下：
 
 * [AngularJS](https://github.com/ocombe/angular-localForage)
 * [Angular 4+](https://www.npmjs.com/package/ngforage)
@@ -184,7 +180,7 @@ have drivers for the following frameworks:
 * [Ember](https://github.com/genkgo/ember-localforage-adapter)
 * [Vue](https://github.com/dmlzj/vlf)
 
-如果你有其他驱动，同时也像将其加入此列表，请 [提出 issue](https://github.com/localForage/localForage/issues/new)。
+如果你有其他驱动，同时想将其加入此列表，请 [提出 issue](https://github.com/localForage/localForage/issues/new)。
 
 ## 自定义驱动
 
@@ -194,11 +190,11 @@ Wiki 中有 [自定义驱动列表][custom drivers]。
 
 [custom drivers]: https://github.com/localForage/localForage/wiki/Custom-Drivers
 
-# 修改 localForage
+# 开发 localForage
 
 你需要有 [node/npm](http://nodejs.org/) 和 [bower](http://bower.io/#installing-bower)。
 
-要使用 localForage，你需要先 [fork](https://github.com/localForage/localForage/fork) 并安装依赖。将 `USERNAME` 替换为你的 GitHub 用户名，并运行以下命令：
+开发 localForage，需要先 [fork](https://github.com/localForage/localForage/fork) 并安装依赖。将 `USERNAME` 替换为你的 GitHub 用户名，并运行以下命令：
 
 ```bash
 # 若你没有安装过 bower，则需要先全局安装 bower
@@ -219,12 +215,11 @@ bower install
 
 localForage 仅能在浏览器中运行，因此执行测试需要一个浏览器环境。本地测试在无头 WebKit 浏览器上运行（使用 [PhantomJS](http://phantomjs.org)）。
 
-localForage 通过 [Sauce Labs](https://saucelabs.com/) 支持 Travis CI，当你提交 Pull request 时，将在所有浏览器中自动执行测试。
+通过 [Sauce Labs](https://saucelabs.com/)，localForage 支持 Travis CI，当你 Pull request 时，将在所有浏览器中自动执行测试。
 
 # 许可协议
 
-This program is free software; it is distributed under an
-[Apache License](https://github.com/localForage/localForage/blob/master/LICENSE).
+本程序为免费软件；许可协议为 [Apache License](https://github.com/localForage/localForage/blob/master/LICENSE).
 
 ---
 
