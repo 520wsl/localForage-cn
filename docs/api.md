@@ -360,7 +360,7 @@ localforage.config({
   </dd>
   <dt>version</dt>
   <dd>
-    数据库的版本。将来可用于升级; 目前未使用。<br>
+    数据库的版本。仅在 WebSQL 和 IndexedDB 中用于设置版本，在 IndexedDB 中，当检测版本升级则会触发 <code>onupgradeneeded</code> 事件。当检测到新仓库，则 localForage 会要求 IndexedDB 更新版本以触发 <code>onupgradeneeded</code> 事件。当前还不支持自定义升级事件，但以后也许会支持。对不支持配置版本信息的驱动而言，该值则会被忽略。<br>
     默认值：<code>1.0</code>
   </dd>
   <dt>description</dt>
@@ -393,6 +393,9 @@ var myCustomDriver = {
     getItem: function(key, callback) {
         // 在此处自定义实现...
     },
+    iterate: function(iteratorCallback, successCallback) {
+        // 在此处自定义实现...
+    }, 
     key: function(n, callback) {
         // 在此处自定义实现...
     },
